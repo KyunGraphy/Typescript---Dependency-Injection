@@ -1,10 +1,30 @@
+// Định nghĩa một interface cho service tính toán
+interface CalculationService {
+    calculateArea(width: number, height: number): number;
+    calculatePerimeter(width: number, height: number): number;
+}
+
+// Implement CalculationService interface
+class RectangleCalculationService implements CalculationService {
+    calculateArea(width: number, height: number): number {
+        return width * height;
+    }
+
+    calculatePerimeter(width: number, height: number): number {
+        return 2 * (width + height);
+    }
+}
+
+// Đối tượng Rectangle sử dụng Dependency Injection
 class Rectangle {
     private width: number;
     private height: number;
+    private calculationService: CalculationService;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, calculationService: CalculationService) {
         this.width = width;
         this.height = height;
+        this.calculationService = calculationService;
     }
 
     getWidth(): number {
@@ -24,16 +44,21 @@ class Rectangle {
     }
 
     getArea(): number {
-        return this.width * this.height;
+        return this.calculationService.calculateArea(this.width, this.height);
     }
 
     getPerimeter(): number {
-        return 2 * (this.width + this.height);
+        return this.calculationService.calculatePerimeter(this.width, this.height);
     }
 }
 
+// Tạo một instance của CalculationService
+const calculationService = new RectangleCalculationService();
+
+// Sử dụng Dependency Injection để tạo một instance của Rectangle
+const rectangle = new Rectangle(5, 10, calculationService);
+
 // Sử dụng đối tượng Rectangle
-const rectangle = new Rectangle(5, 10);
 console.log("Width:", rectangle.getWidth());
 console.log("Height:", rectangle.getHeight());
 console.log("Area:", rectangle.getArea());
